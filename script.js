@@ -1,5 +1,6 @@
 // header( 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMDgyZGM3NmZkNWM4MmVmYTAxYTRmYmIyNWUxYWQ3YSIsIm5iZiI6MTc0OTIzNTIwNi4yNDg5OTk4LCJzdWIiOiI2ODQzMzYwNmVhNzQyY2Y3OTVhZDliNGIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.nf_xlX9DZhh7XMTuTqikYaPErPVgbt63rt9EY0H4Sdc')
 //Carousel consts
+
 const imageContainer = document.getElementById('imgs');
 
 const API_URL =
@@ -11,62 +12,114 @@ const HIGHESTRATED_API =
 	// 'https://api.themoviedb.org/3/discover/tv?include_adult=false&include_video=false&language=en-uk&page=1&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a&page=1&with_original_language=en&sort_by=popularity.desc&sort_by=vote_average.desc&vote_count.gte=200&primary_release_year=2023&first_air_date_year=2016'
 	// 'https://api.themoviedb.org/3/trending/tv/day?language=en-US&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a'
 	'https://api.themoviedb.org/3/genre/movie/list&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a';
+const carouselSize = 9;
+const carouselIndent = (carouselSize - 1) / 2;
+
 const trending_movies =
-	'https://api.themoviedb.org/3/trending/movie/day?language=en-US&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a';
-
-const API_Key = 'api_key=c082dc76fd5c82efa01a4fbb25e1ad7a';
+	'https://api.themoviedb.org/3/trending/movie/week?language=en-US&sort_by=vote_average.desc';
+const comingSoon_movies =
+	'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&with_release_type=2|3&release_date.gte={min_date}&release_date.lte={max_date}&sort_by=vote_average.desc&vote_count.gte=100';
+const inCinemas_movies =
+	'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&with_release_type=2|3&release_date.gte={12 2025}&release_date.lte={max_date}';
+const API_Key = '&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a';
 var obj = { key1: API_URL, key2: HIGHESTRATED_API };
-
+const test =
+	'https://api.themoviedb.org/3/discover/tv?first_air_date_year=2020&include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=500';
 // api_key=c082dc76fd5c82efa01a4fbb25e1ad7a
+let category = 'movie';
+function choosePath(bestyear, title) {
+	let year = bestyear;
+	const best_rated = `https://api.themoviedb.org/3/discover/${category}?include_adult=false&include_video=false&language=en-US&page=1&primary_release_year=${year}&sort_by=vote_average.desc&vote_count.gte=500`;
+	getMovies(best_rated, movieCarousel, title);
+}
+
 const form = document.getElementById('form');
 const search = document.getElementById('search');
 const main = document.getElementById('main');
+
 //get initial moves
 // getMovies(API_URL);
 
-getMovies(trending_movies);
+// getMovies(trending_movies, trendingMovies, 'Trending Movies');
+// getMovies(test, trendingMovies, 'Test');
+// getMovies(inCinemas_movies, trendingMovies, 'In Cinemas');
+// getMovies(comingSoon_movies,trendingMovies,'coming soon')
 
-async function getMovies(url) {
-	const res = await fetch(url);
+async function getMovies(url, functionName, functionTitle) {
+	const res = await fetch(url + API_Key);
 	const data = await res.json();
-	trendingMovies(data.results);
+	functionName(data.results, functionTitle);
 	// showMovies(data.results)
 	// console.log(data.results);
 }
 let idx = 0;
+function changeImage(img) {
+	img.forEach((image, i) => {
+		image.removeAttribute('id');
+		image.classList.remove('hidden');
+		if (idx > img.length - 1 - carouselIndent) {
+			idx = 0 - carouselIndent;
+		}
+		if (idx < 0 - carouselIndent) {
+			idx = img.length - 1 - carouselIndent;
+		}
 
-function trendingMovies(movies) {
+		if (idx + i + carouselIndent < carouselSize) {
+			image.id = `image-${i + idx + carouselIndent}`;
+			if (idx + 1 < carouselIndent) {
+				image.classList.remove('hidden');
+			}
+		} else if (idx + i > img.length - 1 - carouselIndent) {
+			if (idx + i - img.length + carouselIndent > img.length - 1) {
+			} else {
+				image.id = `image-${i + idx - img.length + carouselIndent}`;
+			}
+
+			if (idx + i > img.length + carouselIndent) {
+				image.classList.add('hidden');
+			}
+		} else {
+			image.classList.add('hidden');
+		}
+	});
+}
+function movieCarousel(movies, title) {
+	const movieImg = document.querySelectorAll('trendingImgDiv img');
 	main.innerHTML =
-		'<h2 class="title" id="trendingMovies">Trending Movies</h2><div class="carousel"><div class="buttons-container"><button class="btn fa-solid fa-left-long" id="left"></button><button class="btn fa-solid fa-right-long" id="right"></button></div><div class="image-container" id="imgs">';
+		'</div><h2 class="title" id="trendingMovies">' +
+		title +
+		'</h2><div class="carousel"><div class="buttons-container"><button class="btn fa-solid fa-left-long" id="left"></button><button class="btn fa-solid fa-right-long" id="right"></button></div><div class="image-container" id="imgs">';
 
 	movies.forEach((movie, idx) => {
 		const { poster_path, vote_average, title } = movie;
 
-		const movieEl = document.createElement('img');
-		movieEl.src = `${IMG_PATH + poster_path}`;
-		movieEl.alt = `${title}`;
-		if (idx < 7) {
-			movieEl.id = `image-${idx}`;
+		const movieEl = document.createElement('div');
+		movieEl.classList.add('trendingImgDiv');
+
+		if (idx + carouselIndent < carouselSize) {
+			movieEl.id = `image-${idx + carouselIndent}`;
+		} else if (idx > movies.length - 1 - carouselIndent) {
+			movieEl.id = `image-${idx - movies.length + carouselIndent}`;
 		} else {
 			movieEl.classList.add('hidden');
 		}
 
-		// `
+		movieEl.innerHTML = `
+		
+			<img src = ${IMG_PATH + poster_path} alt = ${title}/>;
 
-		//     <img src="${IMG_PATH + poster_path}" alt="${title}">
-		//     <div class="movie-info">
+		    <div class="movie-info">
 
-		//     <span class="${getClassByRate(vote_average)}">${vote_average}</span>
-		//     </div>
-		// `;
-		// const buttonsContainer = document.createElement('div');
-		// buttonContainer.innerHTML = ''
+		    <span class="${getClassByRate(vote_average)}">${ratingTo1Decimal(
+			vote_average
+		)}</span>
+		    </div>
+		`;
+
 		document.getElementById('imgs').append(movieEl);
-		// document.querySelector('.carousel').append(buttonsContainer)
 	});
 
-	const img = document.querySelectorAll('#imgs img');
-	console.log(img.length);
+	const img = document.querySelectorAll('#imgs .trendingImgDiv');
 
 	document
 		.querySelector('.buttons-container')
@@ -78,7 +131,6 @@ function trendingMovies(movies) {
 				if (e.target.id === 'left') {
 					idx--;
 					changeImage(img);
-					console.log(idx);
 					// resetInterval();
 				} else if (e.target.id === 'right') {
 					idx++;
@@ -92,8 +144,12 @@ function trendingMovies(movies) {
 		});
 }
 
+function ratingTo1Decimal(x) {
+	return Number.parseFloat(x).toFixed(1);
+}
+
 function showMovies(movies) {
-	main.innerHTML = '';
+	// main.innerHTML = '';
 
 	movies.forEach((movie) => {
 		const { title, poster_path, vote_average, overview } = movie;
@@ -162,28 +218,14 @@ function run() {
 	idx++;
 }
 
-function changeImage(img) {
-	if (idx > img.length - 1) {
-		idx = 0;
-	} else if (idx < 0) {
-		idx = img.length - 1;
+const nav = document.getElementById('navigation');
+nav.addEventListener('click', (e) => {
+	if (e.target.classList.contains('btn')) {
+		console.log(e.target.id);
+		const year = e.target.id;
+		const title = e.target.innerText;
+		choosePath(year, title);
+		nav.classList.add('hide');
+		main.classList.remove('hide');
 	}
-
-	img.forEach((image, i) => {
-		// console.log(image,i);
-		image.removeAttribute('id');
-		image.classList.remove('hidden');
-
-		if (i + idx < img.length) {
-			image.setAttribute('id', 'image-' + (i + idx));
-			if (i + idx > 6) {
-				image.classList.add('hidden');
-			}
-		} else if (i + idx > img.length - 1) {
-			image.setAttribute('id', 'image-' + (i + idx - img.length));
-			if (i + idx - img.length > 6) {
-				image.classList.add('hidden');
-			}
-		}
-	});
-}
+});
