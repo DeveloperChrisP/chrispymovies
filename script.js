@@ -17,20 +17,40 @@ const carouselIndent = (carouselSize - 1) / 2;
 
 const trending_movies =
 	'https://api.themoviedb.org/3/trending/movie/week?language=en-US&sort_by=vote_average.desc';
-const comingSoon_movies =
-	'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&with_release_type=2|3&release_date.gte={min_date}&release_date.lte={max_date}&sort_by=vote_average.desc&vote_count.gte=100';
-const inCinemas_movies =
-	'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=vote_average.desc&with_release_type=2|3&release_date.gte={12 2025}&release_date.lte={max_date}';
+const comingSoon =
+	'https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1';
+const inCinemas =
+	'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1';
 const API_Key = '&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a';
 var obj = { key1: API_URL, key2: HIGHESTRATED_API };
 const test =
 	'https://api.themoviedb.org/3/discover/tv?first_air_date_year=2020&include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=500';
 // api_key=c082dc76fd5c82efa01a4fbb25e1ad7a
 let category = 'movie';
-function choosePath(bestyear, title) {
+function choosePath(api, bestyear, title) {
 	let year = bestyear;
 	const best_rated = `https://api.themoviedb.org/3/discover/${category}?include_adult=false&include_video=false&language=en-US&page=1&primary_release_year=${year}&sort_by=vote_average.desc&vote_count.gte=500`;
-	getMovies(best_rated, movieCarousel, title);
+	switch (api) {
+		case 'best_rated':
+			getMovies(best_rated, movieCarousel, title);
+
+			break;
+		case 'trending':
+			getMovies(trending_movies, movieCarousel, title);
+
+			break;
+		case 'inCinemas':
+			getMovies(inCinemas, movieCarousel, title);
+
+			break;
+		case 'comingSoon':
+			getMovies(comingSoon, movieCarousel, title);
+
+			break;
+
+		default:
+			break;
+	}
 }
 
 const form = document.getElementById('form');
@@ -217,15 +237,69 @@ function run() {
 	changeImage();
 	idx++;
 }
-
 const nav = document.getElementById('navigation');
-nav.addEventListener('click', (e) => {
-	if (e.target.classList.contains('btn')) {
-		console.log(e.target.id);
-		const year = e.target.id;
+navOperation();
+function navOperation() {
+	nav.addEventListener('click', (e) => {
 		const title = e.target.innerText;
-		choosePath(year, title);
-		nav.classList.add('hide');
-		main.classList.remove('hide');
+		if (e.target.classList.contains('btn' && 'bestRated')) {
+			const year = e.target.id;
+			choosePath('best_rated', year, title);
+			hideNavShowMain();
+		} else if (e.target.classList.contains('btn')) {
+			switch (e.target.id) {
+				case 'trending':
+					choosePath('trending', 'n/a', title);
+
+					break;
+				case 'inCinemas':
+					choosePath('inCinemas', 'n/a', title);
+
+					break;
+				case 'comingSoon':
+					choosePath('comingSoon', 'n/a', title);
+
+					break;
+				case 'movies':
+					// changeCat(e.target.id)
+					return;
+					break;
+				case 'tv':
+					changeCat(e.target.id);
+					return;
+					break;
+
+				default:
+					return;
+					break;
+			}
+			hideNavShowMain();
+		}
+	});
+	const form_Year = document.getElementById('form_Year');
+
+	form_Year.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const search_Year = document.getElementById('search_Year');
+		const searchTerm = search_Year.value;
+
+		if (searchTerm && searchTerm !== '') {
+			choosePath('best_rated', searchTerm, `Best rated films of ${searchTerm}`);
+			hideNavShowMain();
+			search.value = '';
+		} else {
+			window.location.reload();
+		}
+	});
+}
+function hideNavShowMain() {
+	nav.classList.add('hide');
+	main.classList.remove('hide');
+}
+function changeCat(catId) {
+	const btnMovies = document.getElementById('movies');
+	console.log(btnMovies);
+	if (catId === 'tv') {
+		btnMovies.classList.add('background');
 	}
-});
+}

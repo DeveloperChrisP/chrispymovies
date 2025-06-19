@@ -34,11 +34,11 @@
 		</header>
 		<nav id="navigation">
 			<div class="category-container">
-				<button class="btn" id="movies">
+				<button class="btn cat" id="movies">
 					Movies
 					<img id="movieImg" src="./images/movies.png" alt="Movies Category" />
 				</button>
-				<button class="btn background" id="tv">
+				<button class="btn cat tv background" id="tv">
 					TV
 					<img id="tvImg" src="./images/tv.png" alt="TV Category" />
 				</button>
@@ -52,13 +52,20 @@
 					Best rated films of 2023
 				</button>
 				<div class="input-container">
-					<p class="bestRated">Best rated films of</p>
-					<input type="text" placeholder="year..." />
+					<p class="">Best rated films of</p>
+					<form id="form_Year">
+						<input
+							class="search"
+							id="search_Year"
+							type="text"
+							placeholder="year..."
+						/>
+					</form>
 				</div>
-				<button id="trending" class="btn bestRated">Trending movies</button>
+				<button id="trending" class="btn otherCat">Trending movies</button>
 				<div class="container">
-					<button id="inCinemas" class="btn bestRated">In Cinemas</button>
-					<button id="comingSoon" class="btn bestRated">Coming soon</button>
+					<button id="inCinemas" class="btn otherCat">In Cinemas</button>
+					<button id="comingSoon" class="btn otherCat">Coming soon</button>
 				</div>
 			</div>
 		</nav>
