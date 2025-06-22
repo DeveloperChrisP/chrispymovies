@@ -238,8 +238,8 @@ main.hide {
 img {
 	/* height: 300px; */
 	object-fit: cover;
-	width: 80%;
-	height: 80%;
+	width: 100%;
+	height: 100%;
 	border-radius: 10px;
 	justify-self: center;
 	/* transition: filter 0.8 ease-in-out; */
