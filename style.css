@@ -244,14 +244,14 @@ img {
 	justify-self: center;
 	/* transition: filter 0.8 ease-in-out; */
 }
-@media (orientation: landscape) {
+@media (height < 300px) {
 	img {
 		width: 80%;
 		height: 60vh;
 		max-height: 250px;
 	}
 	#imgs {
-		height: 60vh;
+		max-height: 60vh;
 	}
 	body {
 	}
