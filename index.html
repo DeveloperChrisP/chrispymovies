@@ -34,25 +34,32 @@
 		</header>
 		<nav id="navigation">
 			<div class="category-container">
-				<button class="btn cat" id="movies">
+				<button class="btn otherCat" id="movies">
 					Movies
-					<img id="movieImg" src="./images/movies.png" alt="Movies Category" />
+					<!-- <img id="movieImg" src="./images/movies.png" alt="Movies Category" /> -->
 				</button>
-				<button class="btn cat tv background" id="tv">
+				<button class="btn otherCat background" id="tv">
 					TV
-					<img id="tvImg" src="./images/tv.png" alt="TV Category" />
+					<!-- <img id="tvImg" class="tv" src="./images/tv.png" alt="TV Category" /> -->
 				</button>
 			</div>
-			<input type="text" class="search movies" placeholder="Search movies..." />
+			<form id="navForm">
+				<input
+					type="text"
+					class="search movies"
+					placeholder="Search movies..."
+				/>
+			</form>
 			<div class="bestRated-container">
-				<button id="2025" class="btn bestRated">Best rated films of 2025</button
+				<button id="2025" class="btn bestRated">
+					Best rated <span class="bestRated"></span> of 2025</button
 				><button id="2024" class="btn bestRated">
-					Best rated films of 2024</button
+					Best rated <span class="bestRated"></span> of 2024</button
 				><button id="2023" class="btn bestRated">
-					Best rated films of 2023
+					Best rated <span class="bestRated"></span> of 2023
 				</button>
 				<div class="input-container">
-					<p class="">Best rated films of</p>
+					<p class="">Best rated <span class="bestRated"></span> of</p>
 					<form id="form_Year">
 						<input
 							class="search"
@@ -62,7 +69,9 @@
 						/>
 					</form>
 				</div>
-				<button id="trending" class="btn otherCat">Trending movies</button>
+				<button id="trending" class="btn otherCat">
+					Trending <span class="bestRated"></span>
+				</button>
 				<div class="container">
 					<button id="inCinemas" class="btn otherCat">In Cinemas</button>
 					<button id="comingSoon" class="btn otherCat">Coming soon</button>

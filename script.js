@@ -14,9 +14,9 @@ const HIGHESTRATED_API =
 	'https://api.themoviedb.org/3/genre/movie/list&api_key=c082dc76fd5c82efa01a4fbb25e1ad7a';
 const carouselSize = 9;
 const carouselIndent = (carouselSize - 1) / 2;
+let category = 'movie';
+let voteCount = 500;
 
-const trending_movies =
-	'https://api.themoviedb.org/3/trending/movie/week?language=en-US&sort_by=vote_average.desc';
 const comingSoon =
 	'https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1';
 const inCinemas =
@@ -26,10 +26,11 @@ var obj = { key1: API_URL, key2: HIGHESTRATED_API };
 const test =
 	'https://api.themoviedb.org/3/discover/tv?first_air_date_year=2020&include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=vote_average.desc&vote_count.gte=500';
 // api_key=c082dc76fd5c82efa01a4fbb25e1ad7a
-let category = 'movie';
 function choosePath(api, bestyear, title) {
 	let year = bestyear;
-	const best_rated = `https://api.themoviedb.org/3/discover/${category}?include_adult=false&include_video=false&language=en-US&page=1&primary_release_year=${year}&sort_by=vote_average.desc&vote_count.gte=500`;
+	const best_rated = `https://api.themoviedb.org/3/discover/${category}?include_adult=false&include_video=false&language=en-US&page=1&primary_release_year=${year}&first_air_date_year=${year}&sort_by=vote_average.desc&vote_count.gte=${voteCount}`;
+	const trending_movies = `https://api.themoviedb.org/3/trending/${category}/week?language=en-US&sort_by=vote_average.desc`;
+
 	switch (api) {
 		case 'best_rated':
 			getMovies(best_rated, movieCarousel, title);
@@ -37,6 +38,8 @@ function choosePath(api, bestyear, title) {
 			break;
 		case 'trending':
 			getMovies(trending_movies, movieCarousel, title);
+			console.log(trending_movies);
+			console.log(category);
 
 			break;
 		case 'inCinemas':
@@ -237,17 +240,25 @@ function run() {
 	changeImage();
 	idx++;
 }
+function updateSpans(category) {
+	const bestRatedSpan = document.querySelectorAll('span.bestRated');
+	bestRatedSpan.forEach((span) => {
+		span.innerText = category;
+	});
+}
+updateSpans('movies');
 const nav = document.getElementById('navigation');
 navOperation();
 function navOperation() {
 	nav.addEventListener('click', (e) => {
 		const title = e.target.innerText;
-		if (e.target.classList.contains('btn' && 'bestRated')) {
-			const year = e.target.id;
+		if (e.target.closest('.btn').classList.contains('btn' && 'bestRated')) {
+			const year = e.target.closest('.btn').id;
+			console.log(year);
 			choosePath('best_rated', year, title);
 			hideNavShowMain();
-		} else if (e.target.classList.contains('btn')) {
-			switch (e.target.id) {
+		} else if (e.target.closest('.btn').classList.contains('otherCat')) {
+			switch (e.target.closest('.btn').id) {
 				case 'trending':
 					choosePath('trending', 'n/a', title);
 
@@ -261,7 +272,7 @@ function navOperation() {
 
 					break;
 				case 'movies':
-					// changeCat(e.target.id)
+					changeCat(e.target.id);
 					return;
 					break;
 				case 'tv':
@@ -275,6 +286,11 @@ function navOperation() {
 			}
 			hideNavShowMain();
 		}
+		// else {
+		// 	if (e.target.classList.contains('tv')) {
+		// 		changeCat(e.target.innerText);
+		// 	}
+		// }
 	});
 	const form_Year = document.getElementById('form_Year');
 
@@ -298,8 +314,27 @@ function hideNavShowMain() {
 }
 function changeCat(catId) {
 	const btnMovies = document.getElementById('movies');
-	console.log(btnMovies);
-	if (catId === 'tv') {
+	const btnTv = document.getElementById('tv');
+	const searchPlaceholder = document.querySelector('form#navForm input');
+	const bottomNavBtns = document.querySelector(
+		'.bestRated-container .container'
+	);
+	if (catId == 'tv') {
 		btnMovies.classList.add('background');
+		btnTv.classList.remove('background');
+		updateSpans('tv');
+		category = 'tv';
+		voteCount = '150';
+		searchPlaceholder.setAttribute('placeholder', 'Search tv...');
+
+		bottomNavBtns.classList.add('hidden');
+	} else if (catId == 'movies') {
+		btnMovies.classList.remove('background');
+		btnTv.classList.add('background');
+		updateSpans('movies');
+		category = 'movie';
+		voteCount = '500';
+		searchPlaceholder.setAttribute('placeholder', 'Search movies...');
+		bottomNavBtns.classList.remove('hidden');
 	}
 }

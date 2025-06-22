@@ -4,6 +4,7 @@
 	--primary-color: #22254b;
 	--secondary-color: #373b69;
 	--selectText: #4750c5;
+	--movieWidth: 10rem;
 }
 
 * {
@@ -16,7 +17,7 @@ body {
 	margin: 0;
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-content: center;
 }
 header {
 	padding: 1rem;
@@ -64,7 +65,7 @@ main.hide {
 .title {
 	width: 100%;
 	text-align: center;
-	margin: 2rem 0 0rem;
+	margin: 1rem 0 0rem;
 	color: white;
 	text-shadow: black 2px 2px 5px;
 }
@@ -228,6 +229,7 @@ main.hide {
 	/* min-height: 250px; */
 	max-width: 200px;
 	display: flex;
+	justify-content: center;
 	/* width: 100%; */
 	/* max-height: 250px; */
 	/* overflow: hidden; */
@@ -236,11 +238,23 @@ main.hide {
 img {
 	/* height: 300px; */
 	object-fit: cover;
-	width: 100%;
-	height: 100%;
+	width: 80%;
+	height: 80%;
 	border-radius: 10px;
-
+	justify-self: center;
 	/* transition: filter 0.8 ease-in-out; */
+}
+@media (orientation: landscape) {
+	img {
+		width: 80%;
+		height: 60vh;
+		max-height: 250px;
+	}
+	#imgs {
+		height: 60vh;
+	}
+	body {
+	}
 }
 #image-0 {
 	transform: translateZ(-700px) translateX(-800px) scale(0.6);
@@ -345,11 +359,14 @@ nav {
 	gap: 1rem;
 	padding: 1rem;
 	border-radius: 10px;
-	max-width: max-content;
+	width: calc(100vw - 2rem);
+	max-width: 400px;
 	color: var(--secondary-color);
 	background: linear-gradient(var(--selectText), rgb(97, 200, 255) 50%);
 	box-shadow: var(--selectText) 5px 5px 1rem;
 	position: absolute;
+	left: 1rem;
+	right: 1rem;
 }
 nav.hide {
 	opacity: 0;
@@ -360,6 +377,7 @@ nav .btn {
 	border: var(--selectText) solid 2px;
 	border-radius: 20px;
 	box-shadow: var(--selectText) 1px 1px 5px;
+	min-width: fit-content;
 }
 nav .btn:hover {
 	cursor: pointer;
@@ -377,25 +395,33 @@ nav .btn:active {
 }
 .category-container .btn {
 	position: relative;
-	height: 4rem;
+	height: 4.4rem;
 	width: 8rem;
 	opacity: 0.9;
 	color: black;
 	z-index: 1;
+	background-image: url(./images/tv.png);
+	background-repeat: no-repeat;
+	background-color: red;
+	background-size: cover;
+	border-radius: 0;
+	font-weight: 900;
+	font-size: 1.25rem;
+	color: white;
 }
-.category-container .btn img {
+/* .category-container .btn img {
 	position: absolute;
 	left: 0;
 	top: 0;
 	border-radius: 0;
 	z-index: -10;
-}
+} */
 .category-container .btn.background {
 	opacity: 0.4;
-	color: white;
 }
 .category-container .btn#movies {
 	color: black;
+	background-image: url(./images/movies.png);
 }
 .bestRated-container {
 	display: flex;
@@ -432,7 +458,13 @@ nav .btn:active {
 .bestRated-container .container {
 	display: flex;
 	justify-content: space-between;
+	overflow: hidden;
+	gap: 0.5rem;
 }
 .bestRated-container .container .btn {
 	width: 49%;
+	transition: opacity 1s;
+}
+.bestRated-container .container.hidden .btn {
+	opacity: 0;
 }
